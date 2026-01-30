@@ -112,7 +112,7 @@ public class CategoriaServiceImpl implements CategoriaService {
                maxIdCategoria = Long.valueOf(0);
            }
            categoriaDTO.setIdCategoria(maxIdCategoria + 1);//OBTENGO EL ID MAXIMO AUTOMATICO, SUMO (1) ENTERO PARA OBTENER EL NUEVO ID.
-
+           
            categoriaRepository.save(categoriaDAO.categoria(categoriaDTO));
            respuestaDTO = new RespuestaDTO(MensajesConstantes.MSG_REGISTRO_CREADO_EXITO, true);
         }
