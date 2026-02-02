@@ -15,44 +15,45 @@ import jakarta.persistence.*;
 @Entity//DECLARACIÓN DE LA ENTIDAD QUE ES LA MISMA TABLA DE LA BASE DE DATOS.
 @Table(name = "TBL_LIBROS")//REFERENCIA A LA TABLA DE LA BASE DE DATOS.
 public class Libro {
-
+    
     //CAMPOS DE LA TABLA DE LA BASE DE DATOS:
     @Id//DECLARACIÓN DEL ID PRINCIPAL DE LA TABLA DE BASE DE DATOS.
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//DECLARACIÓN DE LA GENERACIÓN AUTOMÁTICA DEL ID AUTOINCREMENTAL.
+    
     //AQUI ES DONDE SE CREA EL ENLACE ENTRE LOS CAMPOS DE LA TABLA DE LA BASE DE DATOS Y LAS VARIABLES DECLARADAS
     //QUE RECIBIRAN O ENVIARAS LOS DATOS A LA BASE DE DATOS PARA LA ENTIDAD.
     //NOTA: EN LOS NAME SE PONEN EL NOMBRE DE LOS CAMPOS DE LA TABLA DE LA BASE DE DATOS EXACTAMENTE IGUAL A COMO SE CREARÓN.
     @Column(name = "ID_LIBRO", columnDefinition="BIGINT(20) NOT NULL")
     private Long idLibro;
-
+    
     @Column(name = "TITULO_LIBRO", columnDefinition="VARCHAR2(150) NOT NULL")
     private String tituloLibro;
-
+    
     @ManyToOne(fetch = FetchType.LAZY)//MAPEA RELACIÓN DE FORMA PEREZOSA.
     @JoinColumn(name = "ID_AUTOR", columnDefinition = "BIGINT(20) NOT NULL")
     private Autor autor;
-
+    
     @Column(name = "ANIO_PUBLICACION_LIBRO", columnDefinition="INT(11) NOT NULL")
     private int anioPublicacionLibro;
-
+    
     @Column(name = "SINOPSIS_LIBRO", columnDefinition="TEXT NOT NULL")
     private String sinopsisLibro;
-
+    
     @Column(name = "CODIGO_ISBN_LIBRO", columnDefinition="VARCHAR2(50) NOT NULL")
     private String codigoIsbnLibro;
-
+    
     @Column(name = "PRECIO_LIBRO", columnDefinition="DECIMAL(15,4) NOT NULL")
     private double precioLibro;
-
+    
     @Column(name = "FORMATO_LIBRO", columnDefinition="VARCHAR2(10) NOT NULL")
     private String formatoLibro;
-
+    
     @Column(name = "NOMBRE_ARCHIVO_IMAGEN_LIBRO", columnDefinition="VARCHAR2(256) NULL")
     private String nombreArchivoImagenLibro;
-
+    
     @Column(name = "ESTADO_LIBRO", columnDefinition="VARCHAR2(10) NOT NULL")
     private String estadoLibro;
-
+    
     /*//DECLARACIÓN DE LOS MÉTODOS SETTERS Y GETTERS DE LAS VARIABLES DECLARADAS DE LOS CAMPOS DE LA TABLA DE LA BASE DE DATOS DE LA ENTIDAD:
     public Long getIdLibro() {
         return idLibro;
