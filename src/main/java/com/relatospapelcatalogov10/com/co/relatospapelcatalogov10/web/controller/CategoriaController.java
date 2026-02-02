@@ -9,6 +9,7 @@ import com.relatospapelcatalogov10.com.co.relatospapelcatalogov10.dominio.servic
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,18 +55,13 @@ public class CategoriaController {
     
     //LISTAR REGISTROS ORDENADOS POR ID DE FORMA ASCENDENTE CON PAGINACIÓN:
     @GetMapping("/listAllCategoriasOrderedbyIdAscPag")
-    public ResponseEntity<RespuestaDTO> listarCategoriasOrdenadosporIdAscPag(
+    public ResponseEntity<Slice<CategoriaDTO>> listarCategoriasOrdenadosporIdAscPag(
            @RequestParam(defaultValue = "0") int page,
            @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        RespuestaDTO respuesta = new RespuestaDTO();
-        respuesta.setCategoriasDTO(categoriaService.listarCategoriasOrdenadosporIdAscPag(pageable).getContent());
-        respuesta.setMensaje(MensajesConstantes.MSG_REGISTROS_LISTADOS_EXITO);
-        respuesta.setBanderaexito(true);
-        HttpStatus httpStatus = HttpStatus.OK;
-        respuesta.setStatus(httpStatus.value() + " " + httpStatus.getReasonPhrase());
-        return new ResponseEntity<>(respuesta, httpStatus);
+        Slice<CategoriaDTO> categoriasSlice = categoriaService.listarCategoriasOrdenadosporIdAscPag(pageable);
+        return new ResponseEntity<>(categoriasSlice, HttpStatus.OK);
     }
     
     //2. LISTADO DE REGISTROS FILTRADOS.
@@ -83,19 +79,14 @@ public class CategoriaController {
     
     //LISTAR REGISTROS FILTRADOS POR PALABRA CLAVE Y ORDENADOS POR ID DE FORMA ASCENDENTE CON PAGINACIÓN:
     @GetMapping("/listAllCategoriasbyKeywordAndOrderedbyIdAscPag/{keyword}")
-    public ResponseEntity<RespuestaDTO> listarCategoriasporPalabraClaveyOrdenadosporIdAscPag(
+    public ResponseEntity<Slice<CategoriaDTO>> listarCategoriasporPalabraClaveyOrdenadosporIdAscPag(
            @RequestParam(name = "page", defaultValue = "0") int page,
            @RequestParam(name = "size", defaultValue = "10") int size,
            @PathVariable("keyword") String keyword
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        RespuestaDTO respuesta = new RespuestaDTO();
-        respuesta.setCategoriasDTO(categoriaService.listarCategoriasporPalabraClaveyOrdenadosporIdAscPag(pageable, keyword).getContent());
-        respuesta.setMensaje(MensajesConstantes.MSG_REGISTROS_LISTADOS_EXITO);
-        respuesta.setBanderaexito(true);
-        HttpStatus httpStatus = HttpStatus.OK;
-        respuesta.setStatus(httpStatus.value() + " " + httpStatus.getReasonPhrase());
-        return new ResponseEntity<>(respuesta, httpStatus);
+        Slice<CategoriaDTO> categoriasSlice = categoriaService.listarCategoriasporPalabraClaveyOrdenadosporIdAscPag(pageable, keyword);
+        return new ResponseEntity<>(categoriasSlice, HttpStatus.OK);
     }
     
     //CREAR REGISTRO:

@@ -65,4 +65,5 @@ public interface LibroRepository extends JpaRepository<Libro,Long> {
     Slice<Libro> searchLibrosByKeywordOrderedByIdAscPag(Pageable pageable, @Param("keyword") String keyword);
 
     Optional<Libro> findByIdLibro(Long idLibro);
+
 }
