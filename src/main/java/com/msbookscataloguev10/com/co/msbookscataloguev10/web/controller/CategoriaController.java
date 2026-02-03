@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 * Declaración del controlador.
 */
 @RestController//DECLARACIÓN DEL CONTROLADOR PARA LOS CRUDS.
-@RequestMapping("/categoria")//DECLARACIÓN DE LA RESPUESTA PRINCIPAL DEL MAPEO DE LOS CRUDS.
+@RequestMapping("/categorias")//DECLARACIÓN DE LA RESPUESTA PRINCIPAL DEL MAPEO DE LOS CRUDS.
 public class CategoriaController {
     
     @Autowired//INYECTAMOS EL SERVICIO.

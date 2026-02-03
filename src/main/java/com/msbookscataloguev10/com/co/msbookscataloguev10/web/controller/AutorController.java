@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 * Declaración del controlador.
 */
 @RestController//DECLARACIÓN DEL CONTROLADOR PARA LOS CRUDS.
-@RequestMapping("/autor")//DECLARACIÓN DE LA RESPUESTA PRINCIPAL DEL MAPEO DE LOS CRUDS.
+@RequestMapping("/autores")//DECLARACIÓN DE LA RESPUESTA PRINCIPAL DEL MAPEO DE LOS CRUDS.
 public class AutorController {
     
     @Autowired//INYECTAMOS EL SERVICIO.
