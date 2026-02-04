@@ -1,10 +1,8 @@
 package com.msbookscataloguev10.com.co.msbookscataloguev10.web.controller;
 
 import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto.InventarioDTO;
-import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto.RespuestaDTO;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.service.InventarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,6 @@
 package com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.repository;
 
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.entity.Inventario;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

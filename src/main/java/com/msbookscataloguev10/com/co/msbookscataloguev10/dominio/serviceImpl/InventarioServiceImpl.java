@@ -1,14 +1,12 @@
 package com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.serviceImpl;
 
 import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto.InventarioDTO;
-import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto.RespuestaDTO;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.service.InventarioService;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.dao.InventarioDAO;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.entity.Inventario;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.repository.InventarioRepository;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.utils.TipoMovimiento;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
