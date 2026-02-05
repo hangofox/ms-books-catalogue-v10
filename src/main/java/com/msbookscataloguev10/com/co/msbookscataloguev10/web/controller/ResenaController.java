@@ -63,12 +63,12 @@ public class ResenaController {
     }
 
     @DeleteMapping("/{idResena}")
-    public ResponseEntity<String> eliminarResena(@PathVariable Long idResena){
+    public ResponseEntity<Void> eliminarResena(@PathVariable Long idResena){
         try {
             resenaService.eliminarResena(idResena);
-            return ResponseEntity.ok("Reseña eliminada correctamente");
+            return ResponseEntity.ok().build();
         }catch (IllegalStateException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.notFound().build();
         }
     }
 

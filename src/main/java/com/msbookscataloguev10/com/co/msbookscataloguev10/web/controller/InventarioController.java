@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -34,10 +35,10 @@ public class InventarioController {
       @ApiResponse(responseCode = "404", description = "Libro no encontrado")
   })
   @GetMapping("/kardex/{idLibro}")
-  public ResponseEntity<List<InventarioDTO>> listarKardex(@PathVariable Long idLibro){
-    List<InventarioDTO> inventariosSlice = inventarioService.listarKardex(idLibro);
+  public ResponseEntity<List<InventarioDTO>> listarKardex(@PathVariable Long idLibro) {
+    List<InventarioDTO> inventarios = inventarioService.listarKardex(idLibro);
 
-    return new ResponseEntity<>(inventariosSlice, HttpStatus.OK);
+    return new ResponseEntity<>(inventarios, HttpStatus.OK);
   }
 
   @Operation(
@@ -62,13 +63,12 @@ public class InventarioController {
       @ApiResponse(responseCode = "409", description = "Stock insuficiente")
   })
   @PostMapping("/salida")
-  public ResponseEntity<String> registrarSalida(@RequestBody InventarioDTO inventarioDTO) {
+  public ResponseEntity<Void> registrarSalida(@RequestBody InventarioDTO inventarioDTO) {
     try {
       inventarioService.registrarSalida(inventarioDTO);
-      return ResponseEntity.ok("Salida registrada correctamente");
+      return ResponseEntity.ok().build();
     } catch (IllegalStateException e) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body(e.getMessage());
+      return ResponseEntity.badRequest().build();
     }
 
   }
