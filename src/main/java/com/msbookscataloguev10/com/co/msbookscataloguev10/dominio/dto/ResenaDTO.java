@@ -5,10 +5,12 @@ import lombok.Data;
 
 @Data
 public class ResenaDTO {
-
+    
+    @Schema(description = "ID de la reseña del libro.", nullable = true)
     private Long idResena;
     @Schema(description = "Texto de la reseña de un libro", example = "Excelente libro")
     private String textoResena;
+    @Schema(description = "Estado de la resena del libro", example = "ACTIVO/INACTIVO")
     private String estadoResena;
     @Schema(description = "Calificación del 1 al 5 de un libro", example = "5")
     private Integer calificacionLibro;

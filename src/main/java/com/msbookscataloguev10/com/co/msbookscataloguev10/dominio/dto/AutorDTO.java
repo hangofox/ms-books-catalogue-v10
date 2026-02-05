@@ -2,6 +2,7 @@
 package com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto;
 
 //IMPORTACIÓN DE LIBRERIAS:
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
@@ -14,8 +15,12 @@ import lombok.Data;
 public class AutorDTO {
     
     //DECLARACIÓN DE LAS VARIABLES DE LOS CAMPOS DE LA TABLA DE LA BASE DE DATOS PARA LOS DTO:
+    @Schema(description = "ID del autor.", nullable = true)
     private Long idAutor;
+    @Schema(description = "Nombres del autor.", example = "EJEMPLO: GABRIEL JOSE")
     private String nombresAutor;
+    @Schema(description = "Primer apellido.", example = "EJEMPLO: GARCIA")
     private String primerApellidoAutor;
+    @Schema(description = "Segundo apellido.", example = "EJEMPLO: MARQUEZ")
     private String segundoApellidoAutor;
 }
