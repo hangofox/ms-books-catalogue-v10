@@ -16,7 +16,7 @@ public class InventarioDAO {
   @Autowired
   private LibroRepository libroRepository;
 
-  // DTO → ENTITY
+  //Este método es para guardar los datos. Se hace la conversión DTO → ENTITY
   public Inventario inventario(InventarioDTO dto, TipoMovimiento tipoMovimiento) {
 
     Inventario inventario = new Inventario();
@@ -34,7 +34,7 @@ public class InventarioDAO {
     return inventario;
   }
 
-  // ENTITY → DTO
+  //Este método es para presentar los datos. Se hace la conversión ENTITY → DTO
   public InventarioDTO inventarioDTO(Inventario inventario) {
 
     InventarioDTO dto = new InventarioDTO();
