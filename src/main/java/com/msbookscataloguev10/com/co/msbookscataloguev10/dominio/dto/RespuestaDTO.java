@@ -17,9 +17,11 @@ public class RespuestaDTO {
     private AutorDTO autorDTO;
     private CategoriaDTO categoriaDTO;
     private LibroDTO libroDTO;
+    private ParametroDTO parametroDTO;
     private List<AutorDTO> autoresDTO;
     private List<CategoriaDTO> categoriasDTO;
     private List<LibroDTO> librosDTO;
+    private List<ParametroDTO> parametrosDTO;
     private String mensaje;
     private boolean banderaexito;
     
@@ -43,12 +45,16 @@ public class RespuestaDTO {
     public void setLibroDTO(LibroDTO libroDTO) {
         this.libroDTO = libroDTO;
     }
+    public ParametroDTO getParametroDTO() {
+        return parametroDTO;
+    }
+    public void setParametroDTO(ParametroDTO parametroDTO) {
+        this.parametroDTO = parametroDTO;
+    }
     public List<AutorDTO> getAutoresDTO() {
         return autoresDTO;
     }
-    public void setAutoresDTO(List<AutorDTO> autoresDTO) {
-        this.autoresDTO = autoresDTO;
-    }
+    public void setAutoresDTO(List<AutorDTO> autoresDTO) {this.autoresDTO = autoresDTO;}
     public List<CategoriaDTO> getCategoriasDTO() {
         return categoriasDTO;
     }
@@ -60,6 +66,12 @@ public class RespuestaDTO {
     }
     public void setLibrosDTO(List<LibroDTO> librosDTO) {
         this.librosDTO = librosDTO;
+    }
+    public List<ParametroDTO> getParametrosDTO() {
+        return parametrosDTO;
+    }
+    public void setParametrosDTO(List<ParametroDTO> parametrosDTO) {
+        this.parametrosDTO = parametrosDTO;
     }
     public RespuestaDTO() {
     }
