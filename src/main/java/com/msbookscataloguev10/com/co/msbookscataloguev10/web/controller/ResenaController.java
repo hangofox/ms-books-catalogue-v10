@@ -28,7 +28,7 @@ public class ResenaController {
             @ApiResponse(responseCode = "200", description = "Reseñas obtenidas correctamente"),
             @ApiResponse(responseCode = "404", description = "Reseñas no encontradas")
     })
-    @GetMapping("/{idLibro}")
+    @GetMapping("/libro/{idLibro}")
     public ResponseEntity<List<ResenaDTO>> listarResenas(@PathVariable Long idLibro){
         List<ResenaDTO> resenas= resenaService.listarResenas(idLibro);
         return new ResponseEntity<>(resenas, HttpStatus.OK);
