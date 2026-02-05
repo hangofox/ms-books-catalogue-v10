@@ -11,8 +11,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 /**
-* @Autor HERNAN ADOLFO NUÑEZ GONZALEZ.
-* @Since 02/02/2026.
+ * @Autor PD04. HERNAN ADOLFO NUÑEZ GONZALEZ.
+ * @Since 02/02/2026.
+ * Declaración de la entidad.
+ * @Actualizacion David Paez 04/02/2026.
 * DECLARACIÓN DE LA CLASE INTERFACE DEL REPOSITORIO QUIEN ES EL QUE HACE EL ENLACE DIRECTO HACIA LA BASE DE DATOS.
 */
 public interface LibroRepository extends JpaRepository<Libro,Long> {
@@ -57,4 +59,64 @@ public interface LibroRepository extends JpaRepository<Libro,Long> {
           "CASE WHEN :orderBy = 'id' AND :orderMode = 'desc' THEN tbl_libros.id_libro END DESC",
           nativeQuery = true)
     Slice<Libro> findLibrosByKeywordWithOrder(@Param("keyword") String keyword, @Param("orderBy") String orderBy, @Param("orderMode") String orderMode, Pageable pageable);
+
+    //FILTRAR LIBROS POR CATEGORIA CON ORDENAMIENTO DINÁMICO:
+    @Query(value =
+            "SELECT l.* FROM tbl_libros l " +
+                    "JOIN tbl_libros_x_categorias lc ON lc.id_libro = l.id_libro " +
+                    "WHERE lc.id_categoria = :idCategoria " +
+                    "ORDER BY " +
+                    "CASE WHEN :orderBy = 'titulo' THEN l.titulo_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'titulo' AND :orderMode = 'desc' THEN l.titulo_libro END DESC, " +
+                    "CASE WHEN :orderBy = 'fecha' THEN l.fecha_publicacion_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'fecha' AND :orderMode = 'desc' THEN l.fecha_publicacion_libro END DESC, " +
+                    "CASE WHEN :orderBy = 'precio' THEN l.precio_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'precio' AND :orderMode = 'desc' THEN l.precio_libro END DESC, " +
+                    "CASE WHEN :orderBy IS NULL OR :orderBy = 'id' THEN l.id_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'id' AND :orderMode = 'desc' THEN l.id_libro END DESC",
+            nativeQuery = true)
+    Slice<Libro> findLibrosByCategoriaWithOrder(
+            @Param("idCategoria") Long idCategoria,
+            @Param("orderBy") String orderBy,
+            @Param("orderMode") String orderMode,
+            Pageable pageable
+    );
+
+    //FILTRAR LIBROS POR KEYWORD Y CATEGORIA CON ORDENAMIENTO DINÁMICO:
+    @Query(value =
+            "SELECT l.* FROM tbl_libros l " +
+                    "JOIN tbl_libros_x_categorias lc ON lc.id_libro = l.id_libro " +
+                    "WHERE lc.id_categoria = :idCategoria AND " +
+                    "(" +
+                    "l.titulo_libro LIKE CONCAT('%', :keyword, '%') OR " +
+                    "l.fecha_publicacion_libro LIKE CONCAT('%', :keyword, '%') OR " +
+                    "l.sinopsis_libro LIKE CONCAT('%', :keyword, '%') OR " +
+                    "l.codigo_isbn_libro LIKE CONCAT('%', :keyword, '%') OR " +
+                    "CAST(l.precio_libro AS CHAR) LIKE CONCAT('%', :keyword, '%') OR " +
+                    "l.formato_libro LIKE CONCAT('%', :keyword, '%') OR " +
+                    "l.estado_libro LIKE CONCAT('%', :keyword, '%') OR " +
+                    "l.id_autor IN (SELECT id_autor FROM tbl_autores WHERE " +
+                    "nombres_autor LIKE CONCAT('%', :keyword, '%') OR " +
+                    "primer_apellido_autor LIKE CONCAT('%', :keyword, '%') OR " +
+                    "segundo_apellido_autor LIKE CONCAT('%', :keyword, '%')" +
+                    ")" +
+                    ") " +
+                    "ORDER BY " +
+                    "CASE WHEN :orderBy = 'titulo' THEN l.titulo_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'titulo' AND :orderMode = 'desc' THEN l.titulo_libro END DESC, " +
+                    "CASE WHEN :orderBy = 'fecha' THEN l.fecha_publicacion_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'fecha' AND :orderMode = 'desc' THEN l.fecha_publicacion_libro END DESC, " +
+                    "CASE WHEN :orderBy = 'precio' THEN l.precio_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'precio' AND :orderMode = 'desc' THEN l.precio_libro END DESC, " +
+                    "CASE WHEN :orderBy IS NULL OR :orderBy = 'id' THEN l.id_libro END ASC, " +
+                    "CASE WHEN :orderBy = 'id' AND :orderMode = 'desc' THEN l.id_libro END DESC",
+            nativeQuery = true)
+    Slice<Libro> findLibrosByKeywordAndCategoriaWithOrder(
+            @Param("keyword") String keyword,
+            @Param("idCategoria") Long idCategoria,
+            @Param("orderBy") String orderBy,
+            @Param("orderMode") String orderMode,
+            Pageable pageable
+    );
+
 }

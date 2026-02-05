@@ -7,60 +7,110 @@ import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto.RespuestaD
 import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto.LibroDTO;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.service.LibroService;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.dao.LibroDAO;
+import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.entity.Categoria;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.entity.Libro;
+import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.repository.CategoriaRepository;
 import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.repository.LibroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import java.util.ArrayList;
+import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.entity.Autor;
+import com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.repository.AutorRepository;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 
 /**
-* @Autor HERNAN ADOLFO NUÑEZ GONZALEZ.
-* @Since 02/02/2026.
+ * @Autor PD04. HERNAN ADOLFO NUÑEZ GONZALEZ.
+ * @Since 02/02/2026.
+ * Declaración de la entidad.
+ * @Actualizacion David Paez 04/02/2026.
 * Esta es la declaración de la implementación del servicio.
 * Se inyectan DAOS y repositorios.
 */
 @Service//DECLARACIÓN DE LA IMPLEMENTACIÓN DEL SERVICIO.
 //DECLARACIÓN DE LA CLASE DE LA IMPLEMENTACIÓN DEL SERVICIO:
 public class LibroServiceImpl implements LibroService {
+
     @Autowired//INYECTAMOS EL DAO.
     private LibroDAO libroDAO;
     
     @Autowired//INYECTAMOS EL REPOSITORIO.
     private LibroRepository libroRepository;
-    
+
+    //validar y cargar categorias
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private AutorRepository autorRepository;
+
+
+
+
+
     //MÉTODO ÚNICO PARA LISTAR/FILTRAR/ORDENAR/PAGINAR LIBROS:
+
     @Override
-    public Slice<LibroDTO> listarLibros(String keyword, String orderBy, String orderMode, Pageable pageable) {
+    public Slice<LibroDTO> listarLibros(String keyword, Long idCategoria, String orderBy, String orderMode, Pageable pageable) {
+
         Slice<Libro> libros;
-        
-        //Si hay keyword, buscar con filtro; si no, listar todos.
-        if (keyword != null && !keyword.trim().isEmpty()) {
-           libros = libroRepository.findLibrosByKeywordWithOrder(keyword, orderBy, orderMode, pageable);
+
+        boolean hasKeyword = keyword != null && !keyword.trim().isEmpty();
+        boolean hasCategoria = idCategoria != null;
+
+        if (hasKeyword && hasCategoria) {
+            libros = libroRepository.findLibrosByKeywordAndCategoriaWithOrder(keyword, idCategoria, orderBy, orderMode, pageable);
+        } else if (hasKeyword) {
+            libros = libroRepository.findLibrosByKeywordWithOrder(keyword, orderBy, orderMode, pageable);
+        } else if (hasCategoria) {
+            libros = libroRepository.findLibrosByCategoriaWithOrder(idCategoria, orderBy, orderMode, pageable);
         } else {
             libros = libroRepository.findAllLibrosWithOrder(orderBy, orderMode, pageable);
         }
-        
+
         return libros.map(libro -> libroDAO.libroDTO(libro));
     }
-    
+
+
+
     //CREAR REGISTRO:
     @Override//SOBREESCRIBIMOS EL METODO DE CREAR REGISTRO.
     public RespuestaDTO crearLibro(LibroDTO libroDTO) {
-        Long maxIdLibro = null;
-        //Optional<Libro> libroId = libroRepository.findByIdLibro(libroDTO.getIdLibro());
+
         RespuestaDTO respuestaDTO = new RespuestaDTO(MensajesConstantes.MSG_REGISTRO_NO_CREADO, false);
-        
-        libroDTO.setIdLibro(null);//SE IGNORA EL ID ENVIADO PARA QUE LA BASE DE DATOS ASIGNE UNO NUEVO AUTOINCREMENTAL.
-        libroRepository.save(libroDAO.libro(libroDTO));
-        respuestaDTO = new RespuestaDTO(MensajesConstantes.MSG_REGISTRO_CREADO_EXITO, true);
-        
-        return respuestaDTO;
+
+        // 1) Ignorar ID (autoincremental)
+        libroDTO.setIdLibro(null);
+
+        // 2) Validar que venga el idAutor
+        if (libroDTO.getAutorDTO() == null || libroDTO.getAutorDTO().getIdAutor() == null) {
+            return new RespuestaDTO("Debes enviar autorDTO.idAutor", false);
+        }
+
+        Long idAutor = libroDTO.getAutorDTO().getIdAutor();
+
+        // 3) Buscar el autor REAL en BD (esto evita el transient)
+        Autor autor = autorRepository.findById(idAutor)
+                .orElseThrow(() -> new IllegalArgumentException("No existe autor con id: " + idAutor));
+
+        // 4) Construir el libro desde el DAO
+        Libro libro = libroDAO.libro(libroDTO);
+
+        // 5) Reemplazar el autor del libro por el autor MANAGED (de BD)
+        libro.setAutor(autor);
+
+        // 6) Guardar
+        libroRepository.save(libro);
+
+        return new RespuestaDTO(MensajesConstantes.MSG_REGISTRO_CREADO_EXITO, true);
     }
-    
+
+
     //LEER CONSULTA DE REGISTRO POR ID:
     @Override//SOBREESCRIBIMOS EL METODO DE LEER CONSULTA DE REGISTRO.
     public RespuestaDTO consultarLibroporId(Long idLibro) {
@@ -118,4 +168,79 @@ public class LibroServiceImpl implements LibroService {
         
         return respuestaDTO;
     }
+    //RELACIÓN LIBRO-CATEGORIA
+    @Override
+    public RespuestaDTO agregarCategoriaALibro(Long idLibro, Long idCategoria) {
+
+        Optional<Libro> libroOpt = libroRepository.findByIdLibro(idLibro);
+        if (!libroOpt.isPresent()) {
+            return new RespuestaDTO("LIBRO NO ENCONTRADO", false);
+        }
+
+        Optional<Categoria> catOpt = categoriaRepository.findByIdCategoria(idCategoria);
+        if (!catOpt.isPresent()) {
+            return new RespuestaDTO("CATEGORIA NO ENCONTRADA", false);
+        }
+
+        Libro libro = libroOpt.get();
+        if (libro.getCategorias() == null) {
+            libro.setCategorias(new HashSet<>());
+        }
+
+        libro.getCategorias().add(catOpt.get());
+        libroRepository.save(libro);
+
+        return new RespuestaDTO("CATEGORIA AGREGADA AL LIBRO CORRECTAMENTE", true);
+    }
+
+    @Override
+    public RespuestaDTO eliminarCategoriaDeLibro(Long idLibro, Long idCategoria) {
+
+        Optional<Libro> libroOpt = libroRepository.findByIdLibro(idLibro);
+        if (!libroOpt.isPresent()) {
+            return new RespuestaDTO("LIBRO NO ENCONTRADO", false);
+        }
+
+        Libro libro = libroOpt.get();
+        if (libro.getCategorias() == null || libro.getCategorias().isEmpty()) {
+            return new RespuestaDTO("EL LIBRO NO TIENE CATEGORIAS ASIGNADAS", false);
+        }
+
+        // remover por idCategoria
+        boolean removed = libro.getCategorias().removeIf(c -> c.getIdCategoria().equals(idCategoria));
+        if (!removed) {
+            return new RespuestaDTO("LA CATEGORIA NO ESTÁ ASIGNADA A ESTE LIBRO", false);
+        }
+
+        libroRepository.save(libro);
+        return new RespuestaDTO("CATEGORIA ELIMINADA DEL LIBRO CORRECTAMENTE", true);
+    }
+
+    @Override
+    public RespuestaDTO reemplazarCategoriasDeLibro(Long idLibro, List<Long> categoriasIds) {
+
+        Optional<Libro> libroOpt = libroRepository.findByIdLibro(idLibro);
+        if (!libroOpt.isPresent()) {
+            return new RespuestaDTO("LIBRO NO ENCONTRADO", false);
+        }
+
+        Libro libro = libroOpt.get();
+
+        Set<Categoria> nuevasCategorias = new HashSet<>();
+        if (categoriasIds != null) {
+            for (Long idCat : categoriasIds) {
+                Optional<Categoria> catOpt = categoriaRepository.findByIdCategoria(idCat);
+                if (!catOpt.isPresent()) {
+                    return new RespuestaDTO("CATEGORIA NO ENCONTRADA: " + idCat, false);
+                }
+                nuevasCategorias.add(catOpt.get());
+            }
+        }
+
+        libro.setCategorias(nuevasCategorias);
+        libroRepository.save(libro);
+
+        return new RespuestaDTO("CATEGORIAS REEMPLAZADAS CORRECTAMENTE", true);
+    }
+
 }

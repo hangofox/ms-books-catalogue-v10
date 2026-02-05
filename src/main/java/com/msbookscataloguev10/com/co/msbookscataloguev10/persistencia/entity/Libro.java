@@ -2,15 +2,22 @@
 package com.msbookscataloguev10.com.co.msbookscataloguev10.persistencia.entity;
 
 //IMPORTACIÓN DE LIBRERIAS:
+
 import lombok.Data;
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
 //import java.io.Serializable;
 
+
 /**
-* @Autor PD04. HERNAN ADOLFO NUÑEZ GONZALEZ.
-* @Since 01/08/2023.
-* Declaración de la entidad.
-*/
+ * @Autor PD04. HERNAN ADOLFO NUÑEZ GONZALEZ.
+ * @Since 01/08/2023.
+ * Declaración de la entidad.
+ * @Actualizacion David Paez 04/02/2026.
+ */
+
 @Data//DECLARACIÓN DE LA DATA PARA LOS DATOS DE LA TABLA DE LA BASE DE DATOS PARA LA ENTIDAD.
 @Entity//DECLARACIÓN DE LA ENTIDAD QUE ES LA MISMA TABLA DE LA BASE DE DATOS.
 @Table(name = "TBL_LIBROS")//REFERENCIA A LA TABLA DE LA BASE DE DATOS.
@@ -53,6 +60,17 @@ public class Libro {
     
     @Column(name = "ESTADO_LIBRO", columnDefinition="VARCHAR2(10) NOT NULL")
     private String estadoLibro;
+
+    //RELACIÓN MUCHOS A MUCHOS CON CATEGORIAS (TABLA PIVOTE: tbl_libros_x_categoria)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "tbl_libros_x_categorias",
+            joinColumns = @JoinColumn(name = "id_libro"),
+            inverseJoinColumns = @JoinColumn(name = "id_categoria")
+    )
+    private Set<Categoria> categorias = new HashSet<>();
+
+
     
     /*//DECLARACIÓN DE LOS MÉTODOS SETTERS Y GETTERS DE LAS VARIABLES DECLARADAS DE LOS CAMPOS DE LA TABLA DE LA BASE DE DATOS DE LA ENTIDAD:
     public Long getIdLibro() {

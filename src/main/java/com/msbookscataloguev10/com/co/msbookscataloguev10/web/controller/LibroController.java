@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 /**
 * @Autor HERNAN ADOLFO NUÑEZ GONZALEZ.
@@ -30,16 +31,18 @@ public class LibroController {
     //ENDPOINT ÚNICO PARA LISTAR/FILTRAR/ORDENAR/PAGINAR LIBROS CON QUERY PARAMS:
     @GetMapping("/libros")
     public ResponseEntity<Slice<LibroDTO>> listarLibros(
-           @RequestParam(required = false) String keyword,
-           @RequestParam(required = false) String orderBy,
-           @RequestParam(required = false, defaultValue = "asc") String orderMode,
-           @RequestParam(defaultValue = "0") int page,
-           @RequestParam(defaultValue = "10") int size
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long idCategoria,
+            @RequestParam(required = false) String orderBy,
+            @RequestParam(required = false, defaultValue = "asc") String orderMode,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Slice<LibroDTO> librosSlice = libroService.listarLibros(keyword, orderBy, orderMode, pageable);
+        Slice<LibroDTO> librosSlice = libroService.listarLibros(keyword, idCategoria, orderBy, orderMode, pageable);
         return new ResponseEntity<>(librosSlice, HttpStatus.OK);
     }
+
     
     //CREAR REGISTRO:
     @PostMapping("/libros")//DECLARACIÓN DEL MAPEO DEL CRUD CREAR REGISTRO.
@@ -75,4 +78,30 @@ public class LibroController {
         HttpStatus httpStatus = respuesta.isBanderaexito() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         return new ResponseEntity<>(respuesta, httpStatus);
     }
+
+    //ENDPOINTS RELACIÓN LIBRO-CATEGORIA
+
+    @PostMapping("/libros/{idLibro}/categorias/{idCategoria}")
+    public ResponseEntity<RespuestaDTO> agregarCategoriaALibro(@PathVariable Long idLibro, @PathVariable Long idCategoria) {
+        RespuestaDTO respuesta = libroService.agregarCategoriaALibro(idLibro, idCategoria);
+        HttpStatus httpStatus = respuesta.isBanderaexito() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(respuesta, httpStatus);
+    }
+
+    //ELIMINAR CATEGORIA DE LIBRO:
+    @DeleteMapping("/libros/{idLibro}/categorias/{idCategoria}")
+    public ResponseEntity<RespuestaDTO> eliminarCategoriaDeLibro(@PathVariable Long idLibro, @PathVariable Long idCategoria) {
+        RespuestaDTO respuesta = libroService.eliminarCategoriaDeLibro(idLibro, idCategoria);
+        HttpStatus httpStatus = respuesta.isBanderaexito() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+        return new ResponseEntity<>(respuesta, httpStatus);
+    }
+
+    //REEMPLAZAR CATEGORIAS DE UN LIBRO:
+    @PutMapping("/libros/{idLibro}/categorias")
+    public ResponseEntity<RespuestaDTO> reemplazarCategoriasDeLibro(@PathVariable Long idLibro, @RequestBody List<Long> categoriasIds) {
+        RespuestaDTO respuesta = libroService.reemplazarCategoriasDeLibro(idLibro, categoriasIds);
+        HttpStatus httpStatus = respuesta.isBanderaexito() ? HttpStatus.OK : HttpStatus.BAD_REQUEST;
+        return new ResponseEntity<>(respuesta, httpStatus);
+    }
+
 }
