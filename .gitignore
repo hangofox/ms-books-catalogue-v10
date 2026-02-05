@@ -4,9 +4,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### Properties por lo de la BDD ###
-src/main/resources/application.properties
-
 ### STS ###
 .apt_generated
 .classpath
