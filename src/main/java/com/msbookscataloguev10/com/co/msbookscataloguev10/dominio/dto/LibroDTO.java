@@ -5,7 +5,7 @@ package com.msbookscataloguev10.com.co.msbookscataloguev10.dominio.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 
@@ -44,9 +44,11 @@ public class LibroDTO {
     
     //IDS PARA ASIGNAR CATEGORIAS (REQUEST)
 
-    @JsonIgnore
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<Long> categoriasIds;
-    
+
+
     //CATEGORIAS COMPLETAS (RESPONSE)
     private List<CategoriaDTO> categorias;
     

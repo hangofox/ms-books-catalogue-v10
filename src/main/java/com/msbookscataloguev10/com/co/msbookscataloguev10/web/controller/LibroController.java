@@ -32,22 +32,20 @@ public class LibroController {
     @GetMapping("/libros")
     public ResponseEntity<Slice<LibroDTO>> listarLibros(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String titulo,
-
-            @RequestParam(required = false) String sinopsisLibro,
-            @RequestParam(required = false) String codigoIsbnLibro,
-            @RequestParam(required = false) String formatoLibro,
-            @RequestParam(required = false) String estadoLibro,
-            @RequestParam(required = false) String fechaPublicacionLibro,
-
-            @RequestParam(required = false) Long idCategoria,
-            @RequestParam(required = false) String nombreCategoria,          // <-- NUEVO
-            @RequestParam(required = false) Long idAutor,
-            @RequestParam(required = false) String nombresAutor,             // <-- NUEVO
-            @RequestParam(required = false) String primerApellidoAutor,      // <-- NUEVO
-            @RequestParam(required = false) String segundoApellidoAutor,     // <-- NUEVO
-            @RequestParam(required = false) Double minPrecio,
-            @RequestParam(required = false) Double maxPrecio,
+            @RequestParam(required = false) String  titulo,
+            @RequestParam(required = false) String  sinopsisLibro,
+            @RequestParam(required = false) String  codigoIsbnLibro,
+            @RequestParam(required = false) String  formatoLibro,
+            @RequestParam(required = false) String  estadoLibro,
+            @RequestParam(required = false) String  fechaPublicacionLibro,
+            @RequestParam(required = false) Long    idCategoria,
+            @RequestParam(required = false) String  nombreCategoria,          // <-- NUEVO
+            @RequestParam(required = false) Long    idAutor,
+            @RequestParam(required = false) String  nombresAutor,             // <-- NUEVO
+            @RequestParam(required = false) String  primerApellidoAutor,      // <-- NUEVO
+            @RequestParam(required = false) String  segundoApellidoAutor,     // <-- NUEVO
+            @RequestParam(required = false) Double  minPrecio,
+            @RequestParam(required = false) Double  maxPrecio,
             @RequestParam(required = false) String orderBy,
             @RequestParam(required = false, defaultValue = "asc") String orderMode,
             @RequestParam(defaultValue = "0") int page,
