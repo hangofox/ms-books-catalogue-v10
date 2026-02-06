@@ -27,6 +27,9 @@ public class ResenaServiceImpl implements ResenaService {
 
     @Override
     public void crearResena(ResenaDTO resenaDTO) {
+        if (resenaDTO.getCalificacionLibro() < 1 || resenaDTO.getCalificacionLibro() > 5) {
+            throw new IllegalStateException("La calificación debe estar entre 1 y 5");
+        }
         resenaRepository.save(resenaDAO.resena(resenaDTO));
     }
 
@@ -40,9 +43,9 @@ public class ResenaServiceImpl implements ResenaService {
     }
 
     @Override
-    public void actualizarResena(ResenaDTO resenaDTO) {
+    public void actualizarResena(Long idResena,ResenaDTO resenaDTO) {
         Optional<Resena> resenaOptional =
-                resenaRepository.findById(resenaDTO.getIdResena());
+                resenaRepository.findById(idResena);
         if (resenaOptional.isEmpty()) {
             throw new IllegalStateException("La reseña no existe");
         }
@@ -60,10 +63,10 @@ public class ResenaServiceImpl implements ResenaService {
 
     @Override
     public void eliminarResena(Long idResena) {
-        Optional<Resena> resenaId=resenaRepository.findById(idResena);
-        if(resenaId.isPresent()){
+        Optional<Resena> resenaId = resenaRepository.findById(idResena);
+        if (resenaId.isPresent()) {
             resenaRepository.delete(resenaId.get());
-        }else {
+        } else {
             throw new IllegalStateException("Esta reseña no existe");
         }
     }

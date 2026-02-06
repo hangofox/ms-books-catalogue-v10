@@ -29,13 +29,17 @@ public class ResenaController {
             @ApiResponse(responseCode = "404", description = "Reseñas no encontradas")
     })
     @GetMapping("/libro/{idLibro}")
-    public ResponseEntity<List<ResenaDTO>> listarResenas(@PathVariable Long idLibro){
-        List<ResenaDTO> resenas= resenaService.listarResenas(idLibro);
+    public ResponseEntity<List<ResenaDTO>> listarResenas(@PathVariable Long idLibro) {
+        List<ResenaDTO> resenas = resenaService.listarResenas(idLibro);
+        if (resenas.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(resenas, HttpStatus.OK);
     }
 
     @GetMapping("/calificacion/{idLibro}")
-    public Double consultarCalificacion(@PathVariable Long idLibro){
+    public Double consultarCalificacion(@PathVariable Long idLibro) {
+
         return resenaService.consultarCalificacion(idLibro);
     }
 
@@ -44,13 +48,18 @@ public class ResenaController {
             description = "Crea la reseña con el cuerpo JSON enviado"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Reseña creada")
+            @ApiResponse(responseCode = "200", description = "Reseña creada"),
+            @ApiResponse(responseCode = "400", description = "Reseña con calificación errada, solo recibe del 1 al 5")
     })
 
     @PostMapping
-    public ResponseEntity<Void> crearResena(@RequestBody ResenaDTO resenaDTO){
-        resenaService.crearResena(resenaDTO);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ResenaDTO> crearResena(@RequestBody ResenaDTO resenaDTO) {
+        try {
+            resenaService.crearResena(resenaDTO);
+            return ResponseEntity.ok(resenaDTO);
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @Operation(
@@ -63,11 +72,11 @@ public class ResenaController {
     })
 
     @GetMapping("/{idResena}")
-    public ResponseEntity<ResenaDTO> consultarResenaporId(@PathVariable Long idResena){
+    public ResponseEntity<ResenaDTO> consultarResenaporId(@PathVariable Long idResena) {
         try {
-            ResenaDTO resenaDTO=resenaService.consultarResenaporId(idResena);
+            ResenaDTO resenaDTO = resenaService.consultarResenaporId(idResena);
             return ResponseEntity.ok(resenaDTO);
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -81,9 +90,12 @@ public class ResenaController {
     })
     @PutMapping("/{idResena}")
     public ResponseEntity<Void> actualizarResena(@PathVariable Long idResena, @RequestBody ResenaDTO resenaDTO) {
-        resenaDTO.setIdResena(idResena);
-        resenaService.actualizarResena(resenaDTO);
-        return ResponseEntity.ok().build();
+        try {
+            resenaService.actualizarResena(idResena, resenaDTO);
+            return ResponseEntity.ok().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(
@@ -95,11 +107,11 @@ public class ResenaController {
             @ApiResponse(responseCode = "404", description = "La reseña no existe")
     })
     @DeleteMapping("/{idResena}")
-    public ResponseEntity<Void> eliminarResena(@PathVariable Long idResena){
+    public ResponseEntity<Void> eliminarResena(@PathVariable Long idResena) {
         try {
             resenaService.eliminarResena(idResena);
             return ResponseEntity.ok().build();
-        }catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             return ResponseEntity.notFound().build();
         }
     }

@@ -11,7 +11,7 @@ public interface ResenaService {
     List<ResenaDTO> listarResenas(Long idLibro);
     void crearResena(ResenaDTO resenaDTO);
     ResenaDTO consultarResenaporId(Long idResena);
-    void actualizarResena(ResenaDTO resenaDTO);
+    void actualizarResena(Long idResena,ResenaDTO resenaDTO);
     void eliminarResena(Long idResena);
     Double consultarCalificacion(Long idLibro);
 }

@@ -81,6 +81,10 @@
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.3.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
 		<!--FIN DEPENDENCIAS AGREGADAS.-->
 		<!--DEPENDENCIA REMOVIDA: javax.servlet-api ya no es necesaria en Spring Boot 3.x, se usa jakarta.servlet incluido automáticamente.-->
 		<!--DEPENDENCIA AGREGADA PARA SPRING CLOUD EUREKA CLIENT.-->
